@@ -1,0 +1,461 @@
+---
+import Base from '../layouts/Base.astro';
+import Hero from '../components/Hero.astro';
+import ProjectCard from '../components/ProjectCard.astro';
+import MiniCard from '../components/MiniCard.astro';
+import { projects } from '../data/projects';
+
+const featured = projects.filter((p) => p.featured);
+const others = projects.filter((p) => !p.featured);
+
+const path = [
+  {
+    mark: 'Now',
+    when: 'Current',
+    status: 'CS team leader',
+    title: 'Computer Science Team Leader',
+    org: 'OTC Club, Batna 2 University',
+    text: [
+      'I’m a member of OTC Club at Batna 2 University, and I recently became the CS team leader. It’s a student club, so most of the work is practical: planning sessions, helping members with the basics, answering questions, and keeping the CS side organised enough that people actually show up and get something out of it.',
+      'I’m not running a company here. I’m learning how to coordinate a small team, explain things clearly, and follow through on what I said I’d do. Some weeks go well, some don’t. I keep it honest and keep going.',
+    ],
+    tags: ['Volunteer', 'Teaching', 'Team coordination'],
+  },
+  {
+    mark: 'M.Sc',
+    when: '2026 to 2028',
+    status: 'In progress',
+    title: 'Master of Science in Data Science',
+    org: 'Currently enrolled',
+    text: [
+      'Advanced training in machine learning, statistical learning theory, big data processing and applied data science, building on a statistical foundation toward production-grade modelling systems.',
+    ],
+    tags: ['Machine learning', 'Statistical learning', 'Big data'],
+  },
+  {
+    mark: 'B.Sc',
+    when: 'Graduated 2026',
+    status: 'Completed',
+    title: 'Bachelor of Science in Statistics and Data Analysis',
+    org: 'Graduated',
+    text: [
+      'Core curriculum in probability theory, regression analysis, data visualisation and programming with Python.',
+    ],
+    tags: ['Probability', 'Regression', 'Python'],
+  },
+];
+
+const stats = [
+  { value: '5', label: 'projects shipped, one of them for a client' },
+  { value: '100%', label: 'of the front ends written by AI, directed by me', ai: true },
+  { value: '3', label: 'professional certificates from Meta, IBM and Imperial College' },
+];
+
+const skills = [
+  { area: 'Statistics and analytics', items: ['Python', 'Statistical modelling', 'Hypothesis testing', 'Regression', 'Data visualisation'] },
+  { area: 'Data science and ML', items: ['scikit-learn', 'pandas', 'NumPy', 'Jupyter', 'Feature engineering', 'Model evaluation'] },
+  { area: 'Back-end development', items: ['Django', 'Django REST Framework', 'Djoser', 'JWT auth', 'REST APIs', 'PostgreSQL', 'MySQL', 'Redis', 'Docker', 'Git', 'GitHub'] },
+  { area: 'Working with AI', items: ['LLM prompting', 'AI-assisted development', 'Prompt engineering', 'Directing coding agents'] },
+];
+
+const certificates = [
+  {
+    issuer: 'Meta',
+    status: 'Verified',
+    title: 'Meta Back-End Developer Professional Certificate',
+    platform: 'Coursera, professional certificate',
+    text: 'Back-end development with Django, APIs, database management, version control and production-ready deployment.',
+    href: 'https://www.coursera.org/account/accomplishments/specialization/H6TZL5518F8Y',
+  },
+  {
+    issuer: 'IBM',
+    status: 'Verified',
+    title: 'IBM Data Science Professional Certificate',
+    platform: 'Coursera, professional certificate',
+    text: 'End-to-end data science: Python, SQL, data analysis, machine learning and data visualisation.',
+    href: 'https://www.coursera.org/account/accomplishments/specialization/SG3JFYJV6M38',
+  },
+  {
+    issuer: 'Imperial College London',
+    status: 'In progress',
+    title: 'Mathematics for Machine Learning Specialization',
+    platform: 'Coursera, specialization',
+    text: 'Foundational mathematics for machine learning: linear algebra, multivariate calculus and principal component analysis.',
+    href: null,
+  },
+];
+
+const statement =
+  'I hold a bachelor’s degree in statistics and data analysis and I’m now doing a master’s in data science. Statistics gave me the instinct to find structure in messy data. Certificates from Meta, IBM and Imperial College London added hands-on back-end skills. I’m looking for roles where I can apply statistical modelling, machine learning and back-end development to real problems.';
+---
+
+<Base
+  title="Mouaid Yahiaoui, statistics, data science and back end"
+  description="Statistics and data science student who builds Django back ends. Every front end in these projects is 100% written by AI."
+>
+  <Hero />
+
+  <!-- Work -->
+  <section id="work" class="section wrap" aria-labelledby="work-title">
+    <div class="section-head">
+      <h2 id="work-title">Selected work</h2>
+      <p>Five projects. I wrote every back end. <span class="ai">Every front end is 100% written by AI.</span></p>
+    </div>
+
+    <div class="grid-2">
+      {featured.map((p) => <ProjectCard project={p} />)}
+    </div>
+    <div class="grid-3">
+      {others.map((p) => <MiniCard project={p} />)}
+    </div>
+  </section>
+
+  <!-- Path -->
+  <section id="path" class="section wrap" aria-labelledby="path-title">
+    <div class="section-head">
+      <h2 id="path-title">The path so far</h2>
+      <p>Newest first. Statistics, then data science, with a student club on the side.</p>
+    </div>
+
+    <ol class="path">
+      {
+        path.map((s, i) => (
+          <li class:list={['step', { current: i === 0 }]}>
+            <span class="year mono" aria-hidden="true">{s.mark}</span>
+            <div class="step-body">
+              <p class="step-meta">
+                <span class="pill pill-solid">{s.when}</span>
+                <span class="pill">{s.status}</span>
+              </p>
+              <h3>{s.title}</h3>
+              <p class="org">{s.org}</p>
+              {s.text.map((t) => <p class="step-text">{t}</p>)}
+              <ul class="tags">{s.tags.map((t) => <li>{t}</li>)}</ul>
+            </div>
+          </li>
+        ))
+      }
+    </ol>
+  </section>
+
+  <!-- About -->
+  <section id="about" class="section wrap" aria-labelledby="about-title">
+    <h2 id="about-title" class="about-kicker">About</h2>
+    <p class="statement" data-reveal>
+      {statement.split(' ').map((w) => <span class="w">{w} </span>)}
+    </p>
+
+    <ul class="stats">
+      {
+        stats.map((s) => (
+          <li class:list={['stat-card', { 'stat-ai': s.ai }]}>
+            <span class="stat-value mono">{s.value}</span>
+            <span class="stat-label">{s.label}</span>
+          </li>
+        ))
+      }
+    </ul>
+
+    <h3 class="sub-title" id="skills">Technical range</h3>
+    <p class="sub-lead">Statistical computing, data science, and the software engineering to ship it.</p>
+    <div class="skills">
+      {
+        skills.map((s) => (
+          <div class="skill">
+            <h4>{s.area}</h4>
+            <ul class="tags">{s.items.map((t) => <li>{t}</li>)}</ul>
+          </div>
+        ))
+      }
+    </div>
+
+    <h3 class="sub-title" id="certificates">Certificates</h3>
+    <p class="sub-lead">Industry-recognised credentials from Coursera that complement the academic track.</p>
+    <ul class="certs">
+      {
+        certificates.map((c) => (
+          <li class="cert">
+            <p class="cert-top">
+              <span class="cert-issuer">{c.issuer}</span>
+              <span class:list={['pill', c.href ? 'pill-me' : null]}>{c.status}</span>
+            </p>
+            <h4>{c.title}</h4>
+            <p class="cert-platform mono">{c.platform}</p>
+            <p class="cert-text">{c.text}</p>
+            {c.href ? (
+              <a class="cert-link" href={c.href} target="_blank" rel="noopener">
+                View credential<span class="visually-hidden"> (opens in a new tab)</span>
+              </a>
+            ) : (
+              <p class="cert-link muted">Credential after completion</p>
+            )}
+          </li>
+        ))
+      }
+    </ul>
+  </section>
+
+  <!-- Contact -->
+  <section id="contact" class="section contact" aria-labelledby="contact-title">
+    <div class="wrap contact-inner">
+      <div class="contact-copy">
+        <h2 id="contact-title">Let’s connect</h2>
+        <p>Looking for opportunities in data science, statistical analysis and back-end development.</p>
+      </div>
+
+      <div class="console">
+        <div class="console-head">
+          <span></span><span></span><span></span>
+          <p class="mono">POST /contact</p>
+        </div>
+        <div class="console-body mono" aria-live="polite" data-console>
+          <p><span class="me">$</span> contact --email</p>
+          <p class="out">yahiaouimouaid@gmail.com</p>
+        </div>
+        <div class="console-actions">
+          <button class="btn btn-solid" type="button" data-copy="yahiaouimouaid@gmail.com">Copy email</button>
+          <a class="btn" href="mailto:yahiaouimouaid@gmail.com">Write an email</a>
+          <a class="btn" href="https://www.linkedin.com/in/mouaid-yahiaoui-a2bb2b284/" target="_blank" rel="noopener">LinkedIn</a>
+          <a class="btn" href="https://github.com/yahiaoui-mouaid" target="_blank" rel="noopener">GitHub</a>
+        </div>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<script>
+  function setupPage() {
+    // Project videos play only while on screen, and never when motion is reduced.
+    const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const videos = document.querySelectorAll<HTMLVideoElement>('video[data-autoplay]');
+    if (!reduce && 'IntersectionObserver' in window) {
+      const io = new IntersectionObserver(
+        (entries) => {
+          for (const e of entries) {
+            const v = e.target as HTMLVideoElement;
+            if (e.isIntersecting) {
+              if (v.preload === 'none') v.preload = 'auto';
+              v.play().catch(() => {});
+            } else v.pause();
+          }
+        },
+        { threshold: 0.35 },
+      );
+      videos.forEach((v) => io.observe(v));
+    }
+
+    // About statement: words light up as it scrolls through the viewport.
+    const statement = document.querySelector<HTMLElement>('[data-reveal]');
+    if (statement && !reduce) {
+      const words = Array.from(statement.querySelectorAll<HTMLElement>('.w'));
+      statement.classList.add('is-scrubbed');
+      let ticking = false;
+      const paint = () => {
+        ticking = false;
+        const r = statement.getBoundingClientRect();
+        const start = innerHeight * 0.85;
+        const end = innerHeight * 0.35;
+        const p = Math.min(Math.max((start - r.top) / (start - end + r.height * 0.6), 0), 1);
+        const lit = Math.round(p * words.length);
+        words.forEach((w, i) => w.classList.toggle('lit', i < lit));
+      };
+      const onScroll = () => {
+        if (!ticking) {
+          ticking = true;
+          requestAnimationFrame(paint);
+        }
+      };
+      addEventListener('scroll', onScroll, { passive: true });
+      paint();
+      document.addEventListener('astro:before-swap', () => removeEventListener('scroll', onScroll), { once: true });
+    }
+
+    // Contact console: copying the email prints a confirmation line.
+    const out = document.querySelector('[data-console]');
+    document.querySelector<HTMLButtonElement>('[data-copy]')?.addEventListener('click', async (ev) => {
+      const btn = ev.currentTarget as HTMLButtonElement;
+      const value = btn.dataset.copy ?? '';
+      let ok = true;
+      try {
+        await navigator.clipboard.writeText(value);
+      } catch {
+        ok = false;
+      }
+      const cmd = document.createElement('p');
+      cmd.innerHTML = '<span class="me">$</span> copy --email';
+      const res = document.createElement('p');
+      res.className = ok ? 'ok' : 'out';
+      res.textContent = ok ? '✓ Copied to your clipboard' : 'Copy is blocked here. Select the address above instead.';
+      out?.append(cmd, res);
+      btn.textContent = ok ? 'Copied' : 'Copy email';
+    });
+  }
+  document.addEventListener('astro:page-load', setupPage);
+</script>
+
+<style>
+  /* Work */
+  .grid-2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.25rem; }
+  .grid-3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1.25rem; margin-top: 1.25rem; }
+
+  /* Path: large outlined years down a line */
+  .path { position: relative; padding: 0; list-style: none; }
+  .path::before {
+    content: '';
+    position: absolute;
+    left: 0.45rem;
+    top: 0.5rem;
+    bottom: 0.5rem;
+    width: 1px;
+    background: linear-gradient(var(--me), var(--line-2) 30%, var(--line-2));
+  }
+  .step {
+    position: relative;
+    display: grid;
+    grid-template-columns: minmax(10rem, 0.8fr) minmax(0, 2fr);
+    gap: clamp(1.5rem, 4vw, 3rem);
+    padding: 0 0 clamp(3rem, 7vw, 5rem) 2.5rem;
+  }
+  .step::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0.85rem;
+    width: 0.95rem;
+    height: 0.95rem;
+    border-radius: 50%;
+    background: var(--bg);
+    border: 2px solid var(--line-2);
+  }
+  .step.current::before { border-color: var(--me); box-shadow: 0 0 0 5px color-mix(in oklch, var(--me) 18%, transparent); }
+  .year {
+    font-size: clamp(3rem, 7vw, 5.5rem);
+    font-weight: 600;
+    letter-spacing: -0.06em;
+    line-height: 0.9;
+    color: transparent;
+    -webkit-text-stroke: 1.5px var(--line-2);
+  }
+  .current .year { -webkit-text-stroke-color: var(--me); }
+  .step-body { display: grid; gap: 0.55rem; align-content: start; }
+  .step-meta { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 0.4rem; }
+  .step h3 { font-size: var(--t-h3); font-weight: 650; letter-spacing: -0.03em; line-height: 1.15; }
+  .org { color: var(--me); font-weight: 550; }
+  .step-text { color: var(--ink-2); max-width: var(--measure); }
+  .step .tags { margin-top: 0.5rem; }
+
+  /* About */
+  .about-kicker { font-size: var(--t-sm); font-weight: 600; color: var(--me); margin-bottom: 1.25rem; }
+  .statement {
+    font-size: clamp(1.5rem, 3.2vw, 2.4rem);
+    font-weight: 550;
+    letter-spacing: -0.03em;
+    line-height: 1.3;
+    max-width: 30em;
+  }
+  .statement.is-scrubbed .w { color: var(--ink-3); transition: color 0.25s; }
+  .statement.is-scrubbed .w.lit { color: var(--ink); }
+
+  .stats {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1rem;
+    margin-top: clamp(2.5rem, 6vw, 4rem);
+    padding: 0;
+    list-style: none;
+  }
+  .stat-card {
+    display: grid;
+    gap: 0.75rem;
+    align-content: start;
+    padding: 1.5rem;
+    border-radius: var(--radius-lg);
+    background: var(--card);
+    border: 1px solid var(--line);
+  }
+  .stat-card .stat-value { font-size: clamp(2.5rem, 5vw, 3.6rem); font-weight: 600; letter-spacing: -0.05em; line-height: 1; color: var(--me); }
+  .stat-ai .stat-value { color: var(--ai); }
+  .stat-card .stat-label { color: var(--ink-2); max-width: 24ch; }
+
+  .sub-title {
+    margin-top: clamp(4rem, 9vw, 6rem);
+    font-size: clamp(1.6rem, 3vw, 2.2rem);
+    font-weight: 650;
+    letter-spacing: -0.035em;
+  }
+  .sub-lead { color: var(--ink-2); margin: 0.4rem 0 1.75rem; max-width: 56ch; }
+
+  .skills { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; }
+  .skill { padding: 1.5rem; border-radius: var(--radius-lg); background: var(--card); border: 1px solid var(--line); }
+  .skill h4 { font-size: var(--t-body); font-weight: 650; margin-bottom: 1rem; }
+
+  .certs { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1rem; padding: 0; list-style: none; }
+  .cert {
+    display: flex;
+    flex-direction: column;
+    gap: 0.45rem;
+    padding: 1.5rem;
+    border-radius: var(--radius-lg);
+    background: var(--card);
+    border: 1px solid var(--line);
+  }
+  .cert-top { display: flex; justify-content: space-between; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem; }
+  .cert-issuer { font-weight: 650; }
+  .cert h4 { font-size: 1.125rem; font-weight: 650; letter-spacing: -0.02em; line-height: 1.3; }
+  .cert-platform { font-size: var(--t-xs); color: var(--ink-3); }
+  .cert-text { color: var(--ink-2); font-size: var(--t-sm); flex: 1; }
+  .cert-link { margin-top: 0.75rem; font-weight: 600; color: var(--me); font-size: var(--t-sm); }
+  .cert-link.muted { color: var(--ink-3); }
+
+  /* Contact */
+  .contact {
+    margin-top: clamp(2rem, 6vw, 4rem);
+    background:
+      radial-gradient(60% 80% at 15% 100%, color-mix(in oklch, var(--me) 14%, transparent), transparent 70%),
+      radial-gradient(50% 70% at 90% 10%, color-mix(in oklch, var(--ai) 16%, transparent), transparent 70%);
+    border-top: 1px solid var(--line);
+  }
+  .contact-inner {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr);
+    gap: clamp(2rem, 6vw, 5rem);
+    align-items: center;
+  }
+  .contact h2 { font-size: var(--t-h2); font-weight: 650; letter-spacing: -0.04em; line-height: 1.05; }
+  .contact-copy p { margin-top: 1rem; color: var(--ink-2); font-size: var(--t-lead); max-width: 34ch; }
+  .console {
+    border-radius: var(--radius-lg);
+    background: #0a111c;
+    border: 1px solid #263347;
+    box-shadow: var(--shadow);
+    overflow: hidden;
+    color: #c9d4e3;
+  }
+  .console-head {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.8rem 1rem;
+    border-bottom: 1px solid #1a2434;
+  }
+  .console-head span { width: 0.6rem; height: 0.6rem; border-radius: 50%; background: #263347; }
+  .console-head p { margin-left: auto; font-size: var(--t-xs); color: #5d6d84; }
+  .console-body { min-height: 9rem; padding: 1.25rem; font-size: var(--t-sm); line-height: 1.9; }
+  .console-body :global(.me) { color: #34e0a1; }
+  .console-body :global(.out) { color: #93a3b8; }
+  .console-body :global(.ok) { color: #34e0a1; }
+  .console-actions { display: flex; flex-wrap: wrap; gap: 0.5rem; padding: 0 1.25rem 1.25rem; }
+  .console-actions .btn:not(.btn-solid) { background: #121b2a; border-color: #263347; color: #e8eef6; }
+  .console-actions .btn:not(.btn-solid):hover { border-color: #34e0a1; color: #34e0a1; }
+  .console-actions .btn-solid { background: #34e0a1; border-color: #34e0a1; color: #04130d; }
+
+  @media (max-width: 62rem) {
+    .grid-3, .certs { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .contact-inner { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 48rem) {
+    .grid-2, .grid-3, .certs, .skills, .stats { grid-template-columns: 1fr; }
+    .step { grid-template-columns: 1fr; gap: 0.75rem; }
+    .year { font-size: 3rem; }
+  }
+</style>

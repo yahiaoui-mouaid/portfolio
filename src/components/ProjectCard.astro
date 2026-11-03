@@ -1,0 +1,146 @@
+---
+import { getImage } from 'astro:assets';
+import type { Project } from '../data/projects';
+
+interface Props {
+  project: Project;
+}
+
+const { project } = Astro.props;
+const poster = project.poster
+  ? await getImage({ src: project.poster, width: 1280, format: 'webp', quality: 72 })
+  : undefined;
+const href = `/work/${project.slug}/`;
+---
+
+<article class="card" aria-labelledby={`card-${project.slug}`}>
+  <div class="media" transition:name={`media-${project.slug}`}>
+    {
+      project.video && (
+        <video
+          muted
+          loop
+          playsinline
+          preload="none"
+          poster={poster?.src}
+          data-autoplay
+          aria-label={`Screen recording of ${project.name}`}
+        >
+          <source src={`${project.video}.mp4`} type="video/mp4" />
+        </video>
+      )
+    }
+    <span class="pill chip-tl">{project.tag}</span>
+    <span class="pill pill-ai chip-tr">Front end: 100% AI</span>
+  </div>
+
+  <div class="body">
+    <h3 id={`card-${project.slug}`}>
+      <a href={href}>{project.name}</a>
+    </h3>
+    <p class="kind">{project.kind}</p>
+
+    {
+      project.stat && (
+        <p class="stat">
+          <span class="stat-value mono">{project.stat.value}</span>
+          <span class="stat-label">{project.stat.label}</span>
+        </p>
+      )
+    }
+
+    <ul class="tags">{project.stack.slice(0, 4).map((s) => <li>{s}</li>)}</ul>
+
+    <div class="foot">
+      <a class="go" href={href}>
+        Read the case
+        <span class="go-arrow" aria-hidden="true">
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 8h10M9 4l4 4-4 4"></path></svg>
+        </span>
+      </a>
+      {
+        project.links[0] && (
+          <a class="live" href={project.links[0].href} target="_blank" rel="noopener">
+            {project.links[0].label}
+            <span class="visually-hidden"> (opens in a new tab)</span>
+          </a>
+        )
+      }
+    </div>
+  </div>
+</article>
+
+<style>
+  .card {
+    display: flex;
+    flex-direction: column;
+    padding: 0.75rem;
+    border-radius: var(--radius-lg);
+    background: var(--card);
+    border: 1px solid var(--line);
+    box-shadow: var(--shadow);
+    transition: border-color 0.3s;
+  }
+  .card:hover { border-color: var(--line-2); }
+
+  .media {
+    position: relative;
+    aspect-ratio: 16 / 10;
+    border-radius: calc(var(--radius-lg) - 0.6rem);
+    overflow: hidden;
+    background: var(--bg-2);
+  }
+  .media video { width: 100%; height: 100%; object-fit: cover; object-position: top; }
+  .chip-tl, .chip-tr { position: absolute; top: 0.75rem; }
+  .chip-tl { left: 0.75rem; }
+  .chip-tr { right: 0.75rem; background: color-mix(in oklch, var(--bg) 82%, transparent); }
+
+  .body {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    flex: 1;
+    padding: 1.25rem 1rem 0.75rem;
+  }
+  h3 { font-size: var(--t-h3); font-weight: 650; letter-spacing: -0.03em; line-height: 1.15; }
+  h3 a { text-decoration: none; }
+  /* Whole card is clickable through the title link */
+  .card { position: relative; }
+  h3 a::after { content: ''; position: absolute; inset: 0; border-radius: inherit; }
+  .kind { color: var(--ink-2); }
+
+  .stat {
+    display: flex;
+    align-items: center;
+    gap: 0.9rem;
+    margin-block: 0.75rem 0.5rem;
+    padding-block: 1rem;
+    border-block: 1px solid var(--line);
+  }
+  .stat-value {
+    font-size: clamp(2.2rem, 4vw, 3rem);
+    font-weight: 600;
+    letter-spacing: -0.04em;
+    line-height: 1;
+    color: var(--me);
+  }
+  .stat-label { font-size: var(--t-sm); color: var(--ink-2); line-height: 1.4; max-width: 26ch; }
+
+  .foot {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem 1rem;
+    margin-top: auto;
+    padding-top: 0.75rem;
+  }
+  .live {
+    position: relative;
+    z-index: 1;
+    font-size: var(--t-sm);
+    color: var(--ink-2);
+  }
+  .live:hover { color: var(--me); }
+  .go { position: relative; z-index: 1; }
+</style>

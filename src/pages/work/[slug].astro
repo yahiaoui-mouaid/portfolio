@@ -1,0 +1,153 @@
+---
+import { getImage } from 'astro:assets';
+import Base from '../../layouts/Base.astro';
+import Split from '../../components/Split.astro';
+import { projects, type Project } from '../../data/projects';
+
+export function getStaticPaths() {
+  return projects.map((p) => ({ params: { slug: p.slug }, props: { project: p } }));
+}
+
+interface Props {
+  project: Project;
+}
+
+const { project } = Astro.props;
+const next = projects[(projects.indexOf(project) + 1) % projects.length];
+const poster = project.poster
+  ? await getImage({ src: project.poster, width: 1600, format: 'webp', quality: 75 })
+  : undefined;
+const [method, path] = (project.endpoint ?? 'GET /').split(' ');
+---
+
+<Base title={`${project.name}, ${project.kind.toLowerCase()} · Mouaid Yahiaoui`} description={project.summary}>
+  <article class="wrap case">
+    <a class="back" href="/#work">Back to all work</a>
+
+    <header class="head">
+      <p class="chips">
+        <span class="pill">{project.tag}</span>
+        <span class="pill pill-ai">Front end: 100% written by AI</span>
+      </p>
+      <h1>{project.name}</h1>
+      <p class="kind">{project.kind}</p>
+    </header>
+
+    {
+      project.video ? (
+        <div class="media" transition:name={`media-${project.slug}`}>
+          <video controls playsinline preload="metadata" poster={poster?.src} aria-label={`Screen recording of ${project.name}`}>
+            <source src={`${project.video}.mp4`} type="video/mp4" />
+          </video>
+        </div>
+      ) : (
+        <div class="media term mono" aria-hidden="true" transition:name={`media-${project.slug}`}>
+          <p>
+            <span class="method">{method}</span> {path}
+          </p>
+          <p class="ok">200 OK</p>
+        </div>
+      )
+    }
+
+    <div class="intro">
+      <p class="summary">{project.summary}</p>
+      <div class="side">
+        {project.stat && (
+          <p class="stat">
+            <span class="stat-value mono">{project.stat.value}</span>
+            <span class="stat-label">{project.stat.label}</span>
+          </p>
+        )}
+        {project.note && <p class="note">{project.note}</p>}
+        <div class="links">
+          {
+            project.links.map((l) => (
+              <a class="btn btn-solid" href={l.href} target="_blank" rel="noopener">
+                {l.label}
+                <span class="visually-hidden"> (opens in a new tab)</span>
+              </a>
+            ))
+          }
+        </div>
+      </div>
+    </div>
+
+    <h2>Who wrote what</h2>
+    <Split project={project} />
+
+    <nav class="next" aria-label="Next project">
+      <span>Next project</span>
+      <a class="go" href={`/work/${next.slug}/`}>
+        {next.name}
+        <span class="go-arrow" aria-hidden="true">
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 8h10M9 4l4 4-4 4"></path></svg>
+        </span>
+      </a>
+    </nav>
+  </article>
+</Base>
+
+<style>
+  .case { padding-top: 7rem; display: grid; gap: clamp(1.75rem, 4vw, 2.5rem); }
+  .back { font-weight: 600; color: var(--ink-2); width: fit-content; font-size: var(--t-sm); }
+  .back:hover { color: var(--me); }
+  .head { display: grid; gap: 0.6rem; }
+  .chips { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+  h1 { font-size: clamp(3rem, 9vw, 6.5rem); font-weight: 650; letter-spacing: -0.055em; line-height: 0.95; }
+  .kind { font-size: var(--t-lead); color: var(--ink-2); }
+
+  .media {
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    border: 1px solid var(--line-2);
+    background: #0a111c;
+    box-shadow: var(--shadow);
+  }
+  .media video { width: 100%; aspect-ratio: 16 / 9; object-fit: contain; background: #0a111c; }
+  .term {
+    display: grid;
+    align-content: center;
+    gap: 0.4rem;
+    min-height: clamp(12rem, 30vw, 20rem);
+    padding: clamp(1.5rem, 5vw, 3rem);
+    color: #c9d4e3;
+    font-size: clamp(1.1rem, 2.6vw, 1.8rem);
+    background:
+      radial-gradient(120% 90% at 100% 0%, rgb(167 139 250 / 0.16), transparent 60%),
+      #0a111c;
+  }
+  .method { color: #34e0a1; font-weight: 600; }
+  .ok { color: #7d8ca1; }
+
+  .intro {
+    display: grid;
+    grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+    gap: clamp(1.5rem, 5vw, 4rem);
+    align-items: start;
+  }
+  .summary { font-size: var(--t-lead); line-height: 1.55; max-width: var(--measure); }
+  .side { display: grid; gap: 1.25rem; }
+  .stat { display: flex; align-items: center; gap: 1rem; padding-bottom: 1.25rem; border-bottom: 1px solid var(--line); }
+  .stat-value { font-size: 3rem; font-weight: 600; letter-spacing: -0.05em; line-height: 1; color: var(--me); }
+  .stat-label { color: var(--ink-2); font-size: var(--t-sm); max-width: 26ch; }
+  .note { padding-left: 1rem; border-left: 3px solid var(--me); color: var(--ink-2); }
+  .links { display: flex; flex-wrap: wrap; gap: 0.75rem; }
+
+  h2 { margin-top: clamp(1rem, 4vw, 2.5rem); font-size: var(--t-h2); font-weight: 650; letter-spacing: -0.035em; line-height: 1.05; }
+
+  .next {
+    display: grid;
+    gap: 0.5rem;
+    margin-top: clamp(2rem, 6vw, 4rem);
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--line-2);
+  }
+  .next span:first-child { font-size: var(--t-sm); color: var(--ink-2); }
+  .next .go { font-size: clamp(2rem, 6vw, 3.5rem); font-weight: 650; letter-spacing: -0.045em; line-height: 1; width: fit-content; }
+  .next .go:hover { color: var(--me); }
+
+  @media (max-width: 52rem) {
+    .intro { grid-template-columns: 1fr; }
+  }
+</style>

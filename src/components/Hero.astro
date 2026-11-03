@@ -1,0 +1,349 @@
+---
+// Intro, then a laptop you scroll into. The screen hands over to the work section.
+const lines = [
+  { c: 'cmd', t: '$ whoami' },
+  { c: 'out', t: 'mouaid.yahiaoui, statistics & data science' },
+  { c: 'cmd', t: '$ cat stack.json' },
+  { c: 'json', t: '{"core":["python","django","drf"],"data":["pandas","sklearn","mysql"]}' },
+  { c: 'cmd', t: '$ cat frontend.txt' },
+  { c: 'ai', t: '100% written by AI. I direct it and decide what ships.' },
+  { c: 'cmd', t: '$ systemctl status portfolio' },
+  { c: 'ok', t: '● portfolio.service, active (running)' },
+  { c: 'out', t: '  accepting: data science, analytics, back end' },
+];
+// A small, fixed scatter with its least-squares line, for the plot card.
+const pts = [
+  [8, 50], [14, 44], [20, 46], [26, 38], [31, 40], [37, 31], [43, 33], [49, 26], [55, 27], [61, 19], [67, 21], [73, 13],
+];
+---
+
+<section class="hero" id="top" data-hero aria-labelledby="hero-title">
+  <div class="stage">
+    <div class="intro wrap">
+      <p class="pill pill-me status"><span class="led" aria-hidden="true"></span>Open to work</p>
+      <h1 id="hero-title">I build the back end.<br />AI builds the front end.</h1>
+      <p class="sub">
+        Mouaid Yahiaoui. <strong>B.Sc. in Statistics and Data Analysis</strong>, now on a <strong>Master’s in Data Science</strong>.
+        I write Django back ends and work with data. In every project
+        here, the interface is <strong class="ai">100% written by AI</strong>.
+      </p>
+      <ul class="contacts">
+        <li><a class="btn btn-solid" href="#work">See the work</a></li>
+        <li><a class="btn" href="mailto:yahiaouimouaid@gmail.com">Email</a></li>
+        <li><a class="btn" href="https://www.linkedin.com/in/mouaid-yahiaoui-a2bb2b284/" target="_blank" rel="noopener">LinkedIn</a></li>
+        <li><a class="btn" href="https://github.com/yahiaoui-mouaid" target="_blank" rel="noopener">GitHub</a></li>
+      </ul>
+    </div>
+
+    <div class="scene" aria-hidden="true">
+      <div class="float f-json mono">
+        <p class="f-title">orders.sql</p>
+        <p><span class="k">SELECT</span> wilaya, COUNT(*)</p>
+        <p><span class="k">FROM</span> orders</p>
+        <p><span class="k">GROUP BY</span> wilaya;</p>
+      </div>
+
+      <div class="float f-plot">
+        <svg viewBox="0 0 80 58" width="168" height="122">
+          <line x1="4" y1="54" x2="78" y2="54" class="axis"></line>
+          <line x1="4" y1="54" x2="4" y2="4" class="axis"></line>
+          {pts.map(([x, y]) => <circle cx={x} cy={y} r="1.8" class="pt" />)}
+          <line x1="6" y1="51" x2="76" y2="13" class="fit"></line>
+        </svg>
+        <p class="mono f-cap">lm(y ~ x)</p>
+      </div>
+
+      <div class="float f-status mono">
+        <p><span class="led" aria-hidden="true"></span>portfolio.service</p>
+        <p class="dim">active (running)</p>
+      </div>
+
+      <div class="laptop">
+        <div class="lid">
+          <div class="screen">
+            <div class="term mono" data-term>
+              {lines.map((l, i) => <p class={`tl ${l.c}`} style={`animation-delay:${300 + i * 230}ms`}>{l.t}</p>)}
+              <p class="tl cursor-line" style={`animation-delay:${300 + lines.length * 230}ms`}><span class="cursor"></span></p>
+            </div>
+            <div class="screen-cta">
+              <p class="mono">$ cd ~/work</p>
+              <p class="cta-title">Selected work</p>
+            </div>
+          </div>
+        </div>
+        <div class="base"><span class="notch"></span></div>
+      </div>
+    </div>
+
+    <a class="pill hint" href="#work">
+      <span class="mouse" aria-hidden="true"></span>Scroll into the laptop or jump to the work
+    </a>
+  </div>
+</section>
+
+<script>
+  function setupHero() {
+    const hero = document.querySelector<HTMLElement>('[data-hero]');
+    if (!hero) return;
+
+    // Scroll progress through the hero drives the zoom (CSS reads --p).
+    let ticking = false;
+    const update = () => {
+      ticking = false;
+      const r = hero.getBoundingClientRect();
+      const range = hero.offsetHeight - innerHeight;
+      const p = range > 0 ? Math.min(Math.max(-r.top / range, 0), 1) : 0;
+      hero.style.setProperty('--p', p.toFixed(4));
+    };
+    const onScroll = () => {
+      if (!ticking) {
+        ticking = true;
+        requestAnimationFrame(update);
+      }
+    };
+    addEventListener('scroll', onScroll, { passive: true });
+    addEventListener('resize', onScroll, { passive: true });
+    update();
+    document.addEventListener(
+      'astro:before-swap',
+      () => {
+        removeEventListener('scroll', onScroll);
+        removeEventListener('resize', onScroll);
+      },
+      { once: true },
+    );
+  }
+  document.addEventListener('astro:page-load', setupHero);
+</script>
+
+<style>
+  .hero { --p: 0; position: relative; }
+  .stage {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: clamp(6.5rem, 14vh, 8.5rem);
+    overflow: clip;
+  }
+  /* Soft glow behind the scene */
+  .stage::before {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 42%;
+    width: min(70rem, 120vw);
+    aspect-ratio: 1.6;
+    translate: -50% -30%;
+    background:
+      radial-gradient(closest-side, color-mix(in oklch, var(--me) 22%, transparent), transparent),
+      radial-gradient(closest-side at 70% 60%, color-mix(in oklch, var(--ai) 20%, transparent), transparent);
+    filter: blur(20px);
+    pointer-events: none;
+    z-index: -1;
+  }
+
+  .intro {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 1.1rem;
+    opacity: calc(1 - var(--p) * 3.2);
+    translate: 0 calc(var(--p) * -140px);
+  }
+  .status { gap: 0.5rem; }
+  .led {
+    display: inline-block;
+    width: 0.45rem;
+    height: 0.45rem;
+    border-radius: 50%;
+    background: var(--me);
+    box-shadow: 0 0 0 3px color-mix(in oklch, var(--me) 25%, transparent);
+  }
+  h1 {
+    font-size: var(--t-h1);
+    font-weight: 650;
+    letter-spacing: -0.045em;
+    line-height: 1.02;
+    text-wrap: balance;
+  }
+  .sub {
+    max-width: 60ch;
+    color: var(--ink-2);
+    font-size: clamp(1rem, 1.4vw, 1.125rem);
+    line-height: 1.55;
+    text-wrap: pretty;
+  }
+  .sub strong { color: var(--ink); font-weight: 600; }
+  .sub strong.ai { color: var(--ai); }
+  .contacts {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0;
+    list-style: none;
+  }
+
+  /* Scene */
+  .scene {
+    --w: clamp(19rem, min(58vw, (100svh - 26rem) * 1.45), 50rem);
+    position: relative;
+    width: var(--w);
+    margin-top: clamp(2rem, 5vh, 3.5rem);
+  }
+  .laptop {
+    position: relative;
+    transform-origin: 50% 46%;
+    scale: calc(1 + var(--p) * 1.25);
+    translate: 0 calc(var(--p) * -24vh);
+  }
+  .lid {
+    padding: 2.2% 2.2% 3%;
+    border-radius: 18px 18px 6px 6px;
+    background: linear-gradient(#232c3b, #161d29);
+    box-shadow:
+      0 0 0 1px #2c3748 inset,
+      0 50px 80px -40px rgb(0 0 0 / 0.75);
+  }
+  .screen {
+    position: relative;
+    aspect-ratio: 16 / 10;
+    border-radius: 6px;
+    overflow: hidden;
+    background:
+      radial-gradient(120% 80% at 100% 0%, rgb(167 139 250 / 0.12), transparent 60%),
+      radial-gradient(90% 70% at 0% 100%, rgb(52 224 161 / 0.1), transparent 60%),
+      #070c14;
+  }
+  .base {
+    position: relative;
+    height: calc(var(--w) * 0.028);
+    margin-inline: -7%;
+    border-radius: 0 0 22px 22px;
+    background: linear-gradient(#2a3446, #121823);
+    box-shadow: 0 30px 40px -20px rgb(0 0 0 / 0.6);
+    opacity: calc(1 - var(--p) * 2.5);
+  }
+  .notch {
+    position: absolute;
+    left: 50%;
+    top: 0;
+    width: 16%;
+    height: 40%;
+    translate: -50% 0;
+    border-radius: 0 0 8px 8px;
+    background: #0e141e;
+  }
+
+  .term {
+    position: absolute;
+    inset: 0;
+    padding: clamp(0.8rem, 3%, 1.6rem);
+    font-size: clamp(0.62rem, calc(var(--w) * 0.0175), 0.95rem);
+    line-height: 1.85;
+    color: #93a3b8;
+    opacity: calc(1 - max(0, var(--p) - 0.45) * 5);
+  }
+  .tl { opacity: 0; animation: line-in 0.35s ease forwards; white-space: pre-wrap; overflow-wrap: anywhere; }
+  .tl.cmd { color: #e8eef6; }
+  .tl.cmd:not(:first-child) { margin-top: 0.35em; }
+  .tl.json { color: #7dd3fc; }
+  .tl.ai { color: #c4b5fd; }
+  .tl.ok { color: #34e0a1; }
+  @keyframes line-in { from { opacity: 0; translate: -4px 0; } to { opacity: 1; translate: 0 0; } }
+  .cursor {
+    display: inline-block;
+    width: 0.55em;
+    height: 1.05em;
+    vertical-align: -0.15em;
+    background: #34e0a1;
+    animation: blink 1.05s steps(1) infinite;
+  }
+  @keyframes blink { 50% { opacity: 0; } }
+
+  .screen-cta {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-content: center;
+    gap: 0.4rem;
+    text-align: center;
+    opacity: clamp(0, (var(--p) - 0.55) * 4, 1);
+  }
+  .screen-cta .mono { color: #34e0a1; font-size: clamp(0.6rem, calc(var(--w) * 0.016), 0.85rem); }
+  .cta-title {
+    color: #e8eef6;
+    font-size: clamp(1.2rem, calc(var(--w) * 0.06), 3rem);
+    font-weight: 650;
+    letter-spacing: -0.04em;
+  }
+
+  /* Floating cards around the laptop */
+  .float {
+    position: absolute;
+    z-index: 2;
+    padding: 0.8rem 1rem;
+    border-radius: 16px;
+    background: color-mix(in oklch, #0d1420 86%, transparent);
+    border: 1px solid #263347;
+    color: #c9d4e3;
+    font-size: 0.75rem;
+    line-height: 1.6;
+    box-shadow: 0 24px 50px -24px rgb(0 0 0 / 0.7);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    opacity: calc(1 - var(--p) * 2.6);
+  }
+  .f-title { color: #5d6d84; margin-bottom: 0.2rem; }
+  .k { color: #7dd3fc; }
+  .f-json { right: calc(100% - 3rem); top: 8%; translate: calc(var(--p) * -30vw) 0; rotate: -4deg; }
+  .f-plot { left: calc(100% - 3.5rem); top: -4%; translate: calc(var(--p) * 30vw) 0; rotate: 3deg; padding: 0.7rem 0.8rem 0.5rem; }
+  .f-status { left: calc(100% - 2rem); top: 52%; translate: calc(var(--p) * 30vw) 0; rotate: -2deg; white-space: nowrap; }
+  .f-status p:first-child { display: flex; align-items: center; gap: 0.5rem; color: #34e0a1; }
+  .dim { color: #5d6d84; }
+  .axis { stroke: #263347; stroke-width: 0.6; }
+  .pt { fill: #7dd3fc; }
+  .fit { stroke: #34e0a1; stroke-width: 1.1; stroke-linecap: round; }
+  .f-cap { color: #5d6d84; font-size: 0.7rem; }
+
+  .hint {
+    margin-block: clamp(1.5rem, 4vh, 2.5rem);
+    gap: 0.6rem;
+    text-decoration: none;
+    opacity: calc(1 - var(--p) * 4);
+  }
+  .mouse {
+    width: 0.8rem;
+    height: 1.2rem;
+    border: 1.5px solid currentColor;
+    border-radius: 999px;
+    position: relative;
+  }
+  .mouse::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 0.2rem;
+    width: 2px;
+    height: 0.3rem;
+    translate: -50% 0;
+    border-radius: 2px;
+    background: currentColor;
+  }
+
+  /* Scroll-into-the-laptop only on large screens with motion allowed */
+  @media (min-width: 56rem) and (min-height: 40rem) and (prefers-reduced-motion: no-preference) {
+    .hero { height: 220svh; }
+    .stage { position: sticky; top: 0; height: 100svh; }
+    .hint { position: absolute; bottom: 0; margin-block: 0 1.5rem; }
+  }
+  @media (max-width: 56rem) {
+    .float { display: none; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .tl { animation: none; opacity: 1; }
+    .cursor { animation: none; }
+  }
+</style>

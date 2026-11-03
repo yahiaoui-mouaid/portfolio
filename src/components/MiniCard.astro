@@ -1,0 +1,66 @@
+---
+import type { Project } from '../data/projects';
+
+interface Props {
+  project: Project;
+}
+
+const { project } = Astro.props;
+const href = `/work/${project.slug}/`;
+const [method, path] = (project.endpoint ?? 'GET /').split(' ');
+---
+
+<article class="mini" aria-labelledby={`mini-${project.slug}`}>
+  <div class="term mono" aria-hidden="true" transition:name={`media-${project.slug}`}>
+    <p><span class="method">{method}</span> {path}</p>
+    <p class="ok">200 OK</p>
+    <span class="pill pill-ai">Front end: 100% AI</span>
+  </div>
+  <p class="tag">{project.tag}</p>
+  <h3 id={`mini-${project.slug}`}><a href={href}>{project.name}</a></h3>
+  <p class="kind">{project.kind}</p>
+  <p class="summary">{project.summary}</p>
+  <span class="read">Read the story</span>
+</article>
+
+<style>
+  .mini {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    padding: 0.75rem 0.75rem 1.4rem;
+    border-radius: var(--radius-lg);
+    background: var(--card);
+    border: 1px solid var(--line);
+    transition: border-color 0.3s;
+  }
+  .mini:hover { border-color: var(--line-2); }
+  .term {
+    position: relative;
+    display: grid;
+    align-content: center;
+    gap: 0.25rem;
+    min-height: 8.5rem;
+    margin-bottom: 0.75rem;
+    padding: 1.1rem;
+    border-radius: calc(var(--radius-lg) - 0.6rem);
+    background:
+      radial-gradient(120% 90% at 100% 0%, color-mix(in oklch, var(--ai) 16%, transparent), transparent 60%),
+      #0a111c;
+    color: #c9d4e3;
+    font-size: var(--t-sm);
+  }
+  .method { color: #34e0a1; font-weight: 600; }
+  .ok { color: #7d8ca1; }
+  .term .pill { position: absolute; right: 0.75rem; bottom: 0.75rem; font-family: var(--sans); background: rgb(10 17 28 / 0.8); color: #c4b5fd; }
+  .tag, .kind, .summary, h3, .read { padding-inline: 0.5rem; }
+  .tag { font-size: var(--t-xs); font-weight: 600; color: var(--me); }
+  h3 { font-size: 1.375rem; font-weight: 650; letter-spacing: -0.025em; }
+  h3 a { text-decoration: none; }
+  h3 a::after { content: ''; position: absolute; inset: 0; border-radius: inherit; }
+  .kind { color: var(--ink); font-weight: 500; }
+  .summary { color: var(--ink-2); font-size: var(--t-sm); line-height: 1.55; flex: 1; }
+  .read { margin-top: 0.5rem; font-size: var(--t-sm); font-weight: 600; color: var(--me); }
+  .mini:hover .read { text-decoration: underline; }
+</style>

@@ -1,0 +1,236 @@
+---
+import { ClientRouter } from 'astro:transitions';
+import '../styles/global.css';
+
+interface Props {
+  title: string;
+  description: string;
+}
+
+const { title, description } = Astro.props;
+const path = Astro.url.pathname;
+const onHome = path === '/' || path === '';
+const home = (hash: string) => (onHome ? hash : `/${hash}`);
+const nav = [
+  { label: 'Work', href: home('#work') },
+  { label: 'Path', href: home('#path') },
+  { label: 'About', href: home('#about') },
+  { label: 'Contact', href: home('#contact') },
+];
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta name="theme-color" content="#060a11" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="canonical" href={new URL(path, Astro.site)} />
+    <script is:inline>
+      (function () {
+        function apply() {
+          try {
+            if (localStorage.getItem('theme') === 'light') document.documentElement.dataset.theme = 'light';
+          } catch (e) {}
+        }
+        apply();
+        document.addEventListener('astro:after-swap', apply);
+      })();
+    </script>
+    <ClientRouter />
+  </head>
+  <body>
+    <a class="skip" href="#main">Skip to content</a>
+
+    <header class="top">
+      <a class="who" href="/" aria-label="Mouaid Yahiaoui, home">
+        <span class="avatar" aria-hidden="true">MY</span>
+        <span class="who-name">Mouaid Yahiaoui</span>
+      </a>
+
+      <nav class="links" aria-label="Main">
+        {nav.map((n) => <a href={n.href}>{n.label}</a>)}
+        <button class="theme" type="button" aria-label="Switch between dark and light theme" data-theme-toggle>
+          <svg viewBox="0 0 20 20" width="16" height="16" aria-hidden="true">
+            <circle cx="10" cy="10" r="7.25" fill="none" stroke="currentColor" stroke-width="1.5"></circle>
+            <path d="M10 2.75a7.25 7.25 0 0 1 0 14.5z" fill="currentColor"></path>
+          </svg>
+        </button>
+        <button class="menu-btn" type="button" popovertarget="menu">Menu</button>
+      </nav>
+
+      <div id="menu" class="menu" popover>
+        {nav.map((n) => <a href={n.href} data-close-menu>{n.label}</a>)}
+        <a href="mailto:yahiaouimouaid@gmail.com">Email me</a>
+      </div>
+    </header>
+
+    <main id="main">
+      <slot />
+    </main>
+
+    <footer class="foot">
+      <div class="wrap foot-inner">
+        <p>© {new Date().getFullYear()} Mouaid Yahiaoui. Exploring where statistics meets real-world problems.</p>
+        <p class="mono foot-status">
+          <span class="led" aria-hidden="true"></span>This site’s front end was also written by AI
+        </p>
+      </div>
+    </footer>
+
+    <script>
+      function bind() {
+        const root = document.documentElement;
+        document.querySelector('[data-theme-toggle]')?.addEventListener('click', () => {
+          const next = root.dataset.theme === 'light' ? 'dark' : 'light';
+          if (next === 'light') root.dataset.theme = 'light';
+          else delete root.dataset.theme;
+          try {
+            localStorage.setItem('theme', next);
+          } catch {}
+        });
+        const menu = document.getElementById('menu');
+        document.querySelectorAll('[data-close-menu]').forEach((a) =>
+          a.addEventListener('click', () => menu?.hidePopover?.()),
+        );
+      }
+      // Runs after the first load and after every client-side page swap.
+      document.addEventListener('astro:page-load', bind);
+    </script>
+  </body>
+</html>
+
+<style>
+  .skip {
+    position: absolute;
+    left: 1rem;
+    top: -4rem;
+    z-index: 60;
+    padding: 0.6rem 1rem;
+    background: var(--me);
+    color: var(--on-accent);
+    border-radius: 999px;
+    font-weight: 600;
+  }
+  .skip:focus { top: 1rem; }
+
+  /* Two floating pills */
+  .top {
+    position: fixed;
+    inset: 1rem var(--gutter) auto;
+    z-index: 50;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    pointer-events: none;
+  }
+  .who, .links {
+    pointer-events: auto;
+    display: flex;
+    align-items: center;
+    border-radius: 999px;
+    background: color-mix(in oklch, var(--card) 78%, transparent);
+    border: 1px solid var(--line-2);
+    backdrop-filter: blur(16px) saturate(1.4);
+    -webkit-backdrop-filter: blur(16px) saturate(1.4);
+    box-shadow: var(--shadow);
+  }
+  .who {
+    gap: 0.65rem;
+    padding: 0.35rem 1.1rem 0.35rem 0.35rem;
+    font-weight: 650;
+    letter-spacing: -0.01em;
+    text-decoration: none;
+  }
+  .avatar {
+    display: grid;
+    place-items: center;
+    width: 2.3rem;
+    height: 2.3rem;
+    border-radius: 50%;
+    background: conic-gradient(from 210deg, var(--me), var(--ai), var(--me));
+    color: var(--on-accent);
+    font-family: var(--mono);
+    font-size: 0.75rem;
+    font-weight: 750;
+  }
+  .links { gap: 0.15rem; padding: 0.3rem; }
+  .links a {
+    padding: 0.5rem 0.9rem;
+    border-radius: 999px;
+    font-size: var(--t-sm);
+    font-weight: 550;
+    text-decoration: none;
+    color: var(--ink-2);
+    transition: color 0.2s, background-color 0.2s;
+  }
+  .links a:hover { color: var(--ink); background: var(--card-2); }
+  .theme, .menu-btn {
+    display: grid;
+    place-items: center;
+    height: 2.3rem;
+    border: 0;
+    border-radius: 999px;
+    background: var(--card-2);
+    color: var(--ink);
+    cursor: pointer;
+    font: inherit;
+    font-size: var(--t-sm);
+    font-weight: 600;
+  }
+  .theme { width: 2.3rem; margin-left: 0.25rem; }
+  .menu-btn { display: none; padding: 0 1rem; }
+
+  .menu {
+    pointer-events: auto;
+    inset: 4.5rem var(--gutter) auto auto;
+    margin: 0;
+    min-width: 12rem;
+    padding: 0.5rem;
+    border-radius: var(--radius);
+    border: 1px solid var(--line-2);
+    background: var(--card);
+    color: var(--ink);
+    box-shadow: var(--shadow);
+  }
+  .menu:popover-open { display: grid; }
+  .menu a {
+    padding: 0.75rem 1rem;
+    border-radius: 12px;
+    text-decoration: none;
+    font-weight: 550;
+  }
+  .menu a:hover { background: var(--card-2); }
+
+  .foot { border-top: 1px solid var(--line); color: var(--ink-2); font-size: var(--t-sm); }
+  .foot-inner {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 0.5rem 2rem;
+    padding-block: 1.75rem;
+  }
+  .foot-status { display: inline-flex; align-items: center; gap: 0.5rem; font-size: var(--t-xs); }
+  .led {
+    width: 0.45rem;
+    height: 0.45rem;
+    border-radius: 50%;
+    background: var(--ai);
+    box-shadow: 0 0 0 3px color-mix(in oklch, var(--ai) 22%, transparent);
+  }
+
+  @media (max-width: 46rem) {
+    .links a { display: none; }
+    .menu-btn { display: grid; }
+  }
+  @media (max-width: 24rem) {
+    .who-name { display: none; }
+    .who { padding-right: 0.35rem; }
+  }
+</style>

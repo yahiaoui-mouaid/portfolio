@@ -1,0 +1,70 @@
+---
+// Who wrote what: the back end (me) beside the front end (AI).
+import type { Project } from '../data/projects';
+
+interface Props {
+  project: Project;
+}
+
+const { project } = Astro.props;
+---
+
+<div class="split">
+  <section class="side side-me" aria-labelledby={`me-${project.slug}`}>
+    <h3 id={`me-${project.slug}`}><span class="dot"></span>Back end, written by me</h3>
+    <ul>
+      {project.backend.map((item) => <li>{item}</li>)}
+    </ul>
+    <ul class="tags">{project.stack.map((s) => <li>{s}</li>)}</ul>
+  </section>
+  <section class="side side-ai" aria-labelledby={`ai-${project.slug}`}>
+    <h3 id={`ai-${project.slug}`}><span class="dot"></span>Front end, 100% written by AI</h3>
+    <ul>
+      {project.frontend.map((item) => <li>{item}</li>)}
+    </ul>
+    <ul class="tags">{project.frontendStack.map((s) => <li>{s}</li>)}</ul>
+  </section>
+</div>
+
+<style>
+  .split {
+    display: grid;
+    grid-template-columns: 1.6fr 1fr;
+    gap: 1rem;
+  }
+  .side {
+    padding: clamp(1.25rem, 3vw, 2rem);
+    border-radius: var(--radius-lg);
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-top: 3px solid;
+  }
+  .side-me { border-top-color: var(--me); }
+  .side-ai { border-top-color: var(--ai); }
+  h3 {
+    display: flex;
+    align-items: center;
+    gap: 0.55rem;
+    font-size: var(--t-body);
+    font-weight: 650;
+    margin-bottom: 1rem;
+  }
+  .side-me h3 { color: var(--me); }
+  .side-ai h3 { color: var(--ai); }
+  .dot { width: 0.55rem; height: 0.55rem; border-radius: 50%; background: currentColor; }
+  ul:not(.tags) { display: grid; gap: 0.65rem; padding: 0; list-style: none; margin-bottom: 1.25rem; }
+  li { color: var(--ink-2); line-height: 1.55; }
+  ul:not(.tags) li { position: relative; padding-left: 1.1rem; max-width: 62ch; }
+  ul:not(.tags) li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0.7em;
+    width: 0.45rem;
+    height: 1px;
+    background: currentColor;
+  }
+  @media (max-width: 48rem) {
+    .split { grid-template-columns: 1fr; }
+  }
+</style>

@@ -1,0 +1,181 @@
+@import '@fontsource-variable/geist';
+@import '@fontsource-variable/geist-mono';
+
+/* Two accents carry meaning everywhere on the site:
+   --me  marks the work I wrote (back end, data)
+   --ai  marks the work an AI wrote (every front end) */
+:root {
+  color-scheme: dark;
+
+  --bg: light-dark(#f3f6fa, #060a11);
+  --bg-2: light-dark(#e9eef5, #0a101a);
+  --card: light-dark(#ffffff, #0d1420);
+  --card-2: light-dark(#f6f8fb, #121b2a);
+  --line: light-dark(#dde4ee, #1a2434);
+  --line-2: light-dark(#c9d3e0, #263347);
+  --ink: light-dark(#0b1320, #e8eef6);
+  --ink-2: light-dark(#4a5a70, #93a3b8);
+  --ink-3: light-dark(#7d8ca1, #5d6d84);
+  --me: light-dark(#0a9e6c, #34e0a1);
+  --ai: light-dark(#7c4ddb, #a78bfa);
+  --on-accent: #04130d;
+
+  --sans: 'Geist Variable', 'Segoe UI', system-ui, sans-serif;
+  --mono: 'Geist Mono Variable', ui-monospace, 'Cascadia Code', monospace;
+
+  /* Type scale */
+  --t-xs: 0.8125rem;
+  --t-sm: 0.9375rem;
+  --t-body: 1.0625rem;
+  --t-lead: 1.25rem;
+  --t-h3: 1.625rem;
+  --t-h2: clamp(2.1rem, 4.4vw, 3.4rem);
+  --t-h1: clamp(2.4rem, 5.2vw, 4.4rem);
+
+  --radius-lg: 28px;
+  --radius: 18px;
+  --gutter: clamp(1rem, 4vw, 2.5rem);
+  --measure: 66ch;
+  --ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --shadow: 0 30px 60px -30px light-dark(rgb(15 30 60 / 0.25), rgb(0 0 0 / 0.8));
+}
+:root[data-theme='light'] { color-scheme: light; }
+
+*, *::before, *::after { box-sizing: border-box; }
+* { margin: 0; }
+
+html { -webkit-text-size-adjust: 100%; scroll-padding-top: 6rem; }
+@media (prefers-reduced-motion: no-preference) {
+  html { scroll-behavior: smooth; }
+}
+
+body {
+  font-family: var(--sans);
+  font-size: var(--t-body);
+  line-height: 1.6;
+  background: var(--bg);
+  color: var(--ink);
+  -webkit-font-smoothing: antialiased;
+  overflow-x: clip;
+}
+/* Dot grid, faded toward the bottom of the first screen */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background-image: radial-gradient(var(--line-2) 1px, transparent 1.2px);
+  background-size: 22px 22px;
+  opacity: 0.55;
+}
+
+img, video { display: block; max-width: 100%; height: auto; }
+
+a { color: inherit; text-underline-offset: 0.22em; text-decoration-thickness: 1px; }
+
+:focus-visible {
+  outline: 2px solid var(--me);
+  outline-offset: 3px;
+  border-radius: 6px;
+}
+
+::selection { background: color-mix(in oklch, var(--me) 30%, transparent); }
+
+.wrap {
+  width: 100%;
+  max-width: 74rem;
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+.visually-hidden {
+  position: absolute; width: 1px; height: 1px; overflow: hidden;
+  clip-path: inset(50%); white-space: nowrap;
+}
+
+.mono { font-family: var(--mono); }
+.me { color: var(--me); }
+.ai { color: var(--ai); }
+
+/* Sections */
+.section { padding-block: clamp(4.5rem, 10vw, 8rem); }
+.section-head { display: grid; gap: 0.6rem; margin-bottom: clamp(2rem, 5vw, 3.25rem); }
+.section-head h2 {
+  font-size: var(--t-h2);
+  font-weight: 650;
+  letter-spacing: -0.035em;
+  line-height: 1.05;
+}
+.section-head p { color: var(--ink-2); font-size: var(--t-lead); max-width: 56ch; line-height: 1.45; }
+
+/* Pills */
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.3rem 0.75rem;
+  border-radius: 999px;
+  font-size: var(--t-xs);
+  font-weight: 550;
+  line-height: 1.3;
+  background: color-mix(in oklch, var(--card) 80%, transparent);
+  border: 1px solid var(--line-2);
+  color: var(--ink);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+.pill-ai { border-color: color-mix(in oklch, var(--ai) 55%, transparent); color: var(--ai); }
+.pill-me { border-color: color-mix(in oklch, var(--me) 55%, transparent); color: var(--me); }
+.pill-solid { background: var(--me); color: var(--on-accent); border-color: transparent; }
+
+.tags { display: flex; flex-wrap: wrap; gap: 0.45rem; padding: 0; list-style: none; }
+.tags li {
+  font-family: var(--mono);
+  font-size: var(--t-xs);
+  padding: 0.25rem 0.6rem;
+  border-radius: 8px;
+  background: var(--card-2);
+  border: 1px solid var(--line);
+  color: var(--ink-2);
+}
+
+/* Buttons */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  min-height: 2.75rem;
+  padding: 0.5rem 1.15rem;
+  border-radius: 999px;
+  border: 1px solid var(--line-2);
+  background: var(--card);
+  font-weight: 600;
+  font-size: var(--t-sm);
+  text-decoration: none;
+  transition: border-color 0.2s, background-color 0.2s, color 0.2s;
+}
+.btn:hover { border-color: var(--me); color: var(--me); }
+.btn-solid { background: var(--me); border-color: var(--me); color: var(--on-accent); }
+.btn-solid:hover { background: transparent; color: var(--me); }
+
+/* "Read the case" link with a round arrow, as on every card */
+.go {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.7rem;
+  font-weight: 600;
+  text-decoration: none;
+}
+.go-arrow {
+  display: grid;
+  place-items: center;
+  width: 2.1rem;
+  height: 2.1rem;
+  border-radius: 50%;
+  background: var(--me);
+  color: var(--on-accent);
+  transition: transform 0.3s var(--ease);
+}
+.go-arrow svg { width: 1rem; height: 1rem; }
+.go:hover .go-arrow { transform: translateX(4px); }
