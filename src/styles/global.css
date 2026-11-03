@@ -58,17 +58,6 @@ body {
   -webkit-font-smoothing: antialiased;
   overflow-x: clip;
 }
-/* Dot grid, faded toward the bottom of the first screen */
-body::before {
-  content: '';
-  position: fixed;
-  inset: 0;
-  z-index: -1;
-  pointer-events: none;
-  background-image: radial-gradient(var(--line-2) 1px, transparent 1.2px);
-  background-size: 22px 22px;
-  opacity: 0.55;
-}
 
 img, video { display: block; max-width: 100%; height: auto; }
 

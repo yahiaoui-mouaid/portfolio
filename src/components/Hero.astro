@@ -17,10 +17,9 @@ const pts = [
 ];
 ---
 
-<section class="hero" id="top" data-hero aria-labelledby="hero-title">
+<section class="hero" id="top" data-hero data-stage="0" aria-labelledby="hero-title">
   <div class="stage">
     <div class="intro wrap">
-      <p class="pill pill-me status"><span class="led" aria-hidden="true"></span>Open to work</p>
       <h1 id="hero-title">I build the back end.<br />AI builds the front end.</h1>
       <p class="sub">
         Mouaid Yahiaoui. <strong>B.Sc. in Statistics and Data Analysis</strong>, now on a <strong>Master’s in Data Science</strong>.
@@ -152,7 +151,6 @@ const pts = [
     opacity: calc(1 - var(--p) * 3.2);
     translate: 0 calc(var(--p) * -140px);
   }
-  .status { gap: 0.5rem; }
   .led {
     display: inline-block;
     width: 0.45rem;
